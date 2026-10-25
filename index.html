@@ -1,0 +1,48 @@
+<head>
+    <title>¿Y si lo piensas? | LOGIN</title>
+    <link rel="stylesheet" href="/51694/site/css/style2.css">
+    <link rel="icon" href="images/logo2.png" type="image/x-icon">
+    <script>
+
+        
+        function transitionToPage(event) {
+            event.preventDefault();
+            const loginBox = document.querySelector('.login');
+            const body = document.querySelector('body');
+
+            // Añadir clases para animaciones
+            loginBox.classList.add('slide-out-right');
+            body.classList.add('fade-to-left');
+
+            // Crear el contenedor de la nueva página
+            const newPage = document.createElement('div');
+            newPage.classList.add('new-page');
+            newPage.innerHTML = '<h1>Bienvenido a mi blog - ¿Y si lo piensas?!</h1>';
+            body.appendChild(newPage);
+
+            // Añadir la animación de entrada a la nueva página
+            setTimeout(() => {
+                newPage.classList.add('slide-in-left');
+            }, 100); // Pequeño retraso para sincronizar
+
+            // Redirigir después de la animación (aumentar el tiempo aquí)
+            setTimeout(() => {
+                window.location.href = 'home.html';
+            }, 3000); // Ahora dura 3 segundos (3000 ms)
+        }
+    </script>
+</head>
+
+<body>
+    <div class="login">
+        <h1>Completa los datos</h1>
+        <form method="post" onsubmit="transitionToPage(event);">
+            <input type="text" name="u" placeholder="¿Como quieres que te llamemos?" required="required" />
+            <input type="password" name="p" placeholder="Docente o Estudiante" required="required" />
+            <button type="submit" class="btn btn-primary btn-block btn-large">Ingresar</button>
+        </form>
+        <p style="font-size: 10px; font-weight: bold; margin-top: 15px; color: #555;">
+            Los datos ingresados en el inicio de sesión no serán almacenados. Esto garantiza la seguridad y privacidad de todos nuestros usuarios. Utilizamos conexiones cifradas para proteger tu información en todo momento.
+        </p>
+    </div>
+</body>
