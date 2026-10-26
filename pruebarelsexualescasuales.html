@@ -1,258 +1,201 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cuestionario abierto | ¿Y si lo piensas?</title>
-  <link rel="icon" href="images/logo2.png" type="image/x-icon">
-  <style>
-    :root {
-      --blue: #2878f0;
-      --blue-dark: #1755bb;
-      --ink: #18345a;
-      --muted: #5d7698;
-      --glass-border: rgba(255, 255, 255, .88);
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      min-height: 100vh;
-      padding: 42px 18px;
-      color: var(--ink);
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background:
-        radial-gradient(ellipse at 12% 10%, rgba(255,255,255,.98), transparent 34%),
-        radial-gradient(ellipse at 90% 18%, rgba(111,190,255,.52), transparent 34%),
-        radial-gradient(ellipse at 75% 88%, rgba(147,207,255,.58), transparent 36%),
-        linear-gradient(135deg, #eaf7ff 0%, #d7edff 48%, #eefaff 100%);
-      background-attachment: fixed;
-    }
-    .page { width: min(900px, 100%); margin: 0 auto; }
-    .hero { text-align: center; margin: 0 auto 28px; max-width: 720px; }
-    .eyebrow {
-      display: inline-block; padding: 8px 13px; border: 1px solid rgba(255,255,255,.9);
-      border-radius: 999px; background: rgba(255,255,255,.48); color: var(--blue-dark);
-      font-size: .76rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase;
-      box-shadow: 0 8px 24px rgba(67,137,210,.08); backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-    }
-    h1 { margin: 18px 0 10px; font-size: clamp(2rem, 5vw, 3.25rem); letter-spacing: -.045em; line-height: 1.05; }
-    .hero p { color: var(--muted); margin: 0; font-size: 1.04rem; line-height: 1.65; }
-    .glass {
-      border: 1px solid var(--glass-border); border-radius: 26px;
-      background: rgba(255,255,255,.48);
-      box-shadow: 0 24px 70px rgba(59,117,181,.13), inset 0 1px 0 rgba(255,255,255,.9);
-      backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
-    }
-    .quiz { padding: clamp(16px, 3.5vw, 30px); }
-    .intro-note {
-      margin: 0 0 22px; padding: 15px 17px; border-radius: 16px;
-      background: rgba(220,239,255,.68); border: 1px solid rgba(255,255,255,.9);
-      color: #31577f; line-height: 1.55;
-    }
-    .question {
-      padding: 22px; margin: 0 0 17px; border: 1px solid rgba(255,255,255,.9);
-      border-radius: 20px; background: rgba(255,255,255,.58);
-      box-shadow: 0 8px 28px rgba(61,123,190,.07);
-    }
-    .question h2 { margin: 0 0 12px; font-size: 1.08rem; line-height: 1.5; }
-    .number { color: var(--blue); font-weight: 850; margin-right: 7px; }
-    .hint { color: var(--muted); font-size: .92rem; margin: 0 0 13px; line-height: 1.5; }
-    textarea {
-      display: block; width: 100%; min-height: 150px; resize: vertical; padding: 15px 16px;
-      border: 1px solid rgba(95,153,211,.35); border-radius: 15px;
-      background: rgba(255,255,255,.76); color: var(--ink); font: inherit; line-height: 1.55;
-      outline: none; transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
-    }
-    textarea:focus {
-      border-color: rgba(40,120,240,.72); background: rgba(255,255,255,.94);
-      box-shadow: 0 0 0 4px rgba(40,120,240,.11);
-    }
-    .field-footer { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 9px; color: var(--muted); font-size: .83rem; }
-    .counter { font-variant-numeric: tabular-nums; white-space: nowrap; }
-    .counter.near-limit { color: #b45c16; font-weight: 750; }
-    .glass-button {
-      position: relative; overflow: hidden; display: inline-flex; justify-content: center; align-items: center;
-      gap: 9px; min-height: 50px; padding: 13px 22px; border: 1px solid rgba(255,255,255,.95);
-      border-radius: 16px; color: #1552a8;
-      background: linear-gradient(135deg, rgba(255,255,255,.82), rgba(201,230,255,.56));
-      box-shadow: 0 10px 25px rgba(41,113,201,.15), inset 0 1px 0 #fff;
-      font: inherit; font-weight: 800; text-decoration: none; cursor: pointer;
-      backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
-      transition: transform .22s ease, box-shadow .22s ease;
-    }
-    .glass-button::before {
-      content: ""; position: absolute; top: -80%; left: -45%; width: 34%; height: 260%;
-      transform: rotate(25deg); background: rgba(255,255,255,.62); filter: blur(5px);
-      transition: left .55s ease; pointer-events: none;
-    }
-    .glass-button:hover { transform: translateY(-3px) scale(1.015); box-shadow: 0 15px 32px rgba(41,113,201,.22), inset 0 1px 0 #fff; }
-    .glass-button:hover::before { left: 120%; }
-    .glass-button:active { transform: translateY(0) scale(.99); }
-    .glass-button:focus-visible { outline: 3px solid #2878f0; outline-offset: 4px; }
-    .submit-row { display: flex; justify-content: center; margin-top: 24px; }
-    .results { display: none; margin-top: 24px; padding: clamp(20px, 4vw, 32px); animation: appear .45s ease both; }
-    .results.show { display: block; }
-    .results h2 { margin: 0 0 10px; font-size: 1.5rem; }
-    .results p { color: var(--muted); line-height: 1.65; }
-    .saved-answer { padding: 14px 16px; margin: 12px 0; border-radius: 15px; background: rgba(255,255,255,.62); border: 1px solid rgba(255,255,255,.9); }
-    .saved-answer strong { display: block; margin-bottom: 7px; }
-    .saved-answer p { margin: 0; color: var(--ink); white-space: pre-wrap; overflow-wrap: anywhere; }
-    .result-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 24px; }
-    .result-actions .glass-button { animation: floatIn .5s ease both; }
-    .result-actions .glass-button:nth-child(2) { animation-delay: .12s; }
-    @keyframes appear { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes floatIn { from { opacity: 0; transform: translateY(14px) scale(.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
-    @media (max-width: 560px) {
-      body { padding: 25px 12px; }
-      .question { padding: 17px; }
-      .field-footer { align-items: flex-start; flex-direction: column; }
-      .result-actions { flex-direction: column; }
-      .result-actions .glass-button { width: 100%; }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="images/logo2.png" type="image/x-icon">
+<title>Cuestionario mixto | ¿Y si lo piensas?</title>
+<style>
+:root{--blue:#2878f0;--blue-dark:#1755bb;--ink:#18345a;--muted:#5d7698;--border:rgba(255,255,255,.88)}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;padding:42px 18px;color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:radial-gradient(ellipse at 12% 10%,rgba(255,255,255,.98),transparent 34%),radial-gradient(ellipse at 90% 18%,rgba(111,190,255,.52),transparent 34%),radial-gradient(ellipse at 75% 88%,rgba(147,207,255,.58),transparent 36%),linear-gradient(135deg,#eaf7ff 0%,#d7edff 48%,#eefaff 100%);background-attachment:fixed}
+.page{width:min(900px,100%);margin:0 auto}.hero{text-align:center;margin:0 auto 28px;max-width:720px}
+.eyebrow{display:inline-block;padding:8px 13px;border:1px solid rgba(255,255,255,.9);border-radius:999px;background:rgba(255,255,255,.48);color:var(--blue-dark);font-size:.76rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;box-shadow:0 8px 24px rgba(67,137,210,.08);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+h1{margin:18px 0 10px;font-size:clamp(2rem,5vw,3.25rem);letter-spacing:-.045em;line-height:1.05}.hero p{color:var(--muted);margin:0;font-size:1.04rem;line-height:1.65}
+.glass{border:1px solid var(--border);border-radius:26px;background:rgba(255,255,255,.48);box-shadow:0 24px 70px rgba(59,117,181,.13),inset 0 1px 0 rgba(255,255,255,.9);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px)}
+.quiz{padding:clamp(16px,3.5vw,30px)}.note{margin:0 0 22px;padding:15px 17px;border-radius:16px;background:rgba(220,239,255,.68);border:1px solid rgba(255,255,255,.9);color:#31577f;line-height:1.55}
+.question{padding:22px;margin:0 0 17px;border:1px solid rgba(255,255,255,.9);border-radius:20px;background:rgba(255,255,255,.58);box-shadow:0 8px 28px rgba(61,123,190,.07)}
+.question h2{margin:0 0 15px;font-size:1.08rem;line-height:1.5}.number{color:var(--blue);font-weight:850;margin-right:7px}.answers{display:grid;gap:9px}
+.answer{display:flex;align-items:flex-start;gap:11px;padding:12px 14px;border:1px solid rgba(109,164,218,.22);border-radius:14px;background:rgba(255,255,255,.58);cursor:pointer;transition:transform .2s,border-color .2s,background .2s,box-shadow .2s}
+.answer:hover{transform:translateY(-2px);border-color:rgba(40,120,240,.48);box-shadow:0 7px 18px rgba(40,120,240,.09)}.answer:has(input:checked){border-color:rgba(40,120,240,.65);background:rgba(211,234,255,.78);box-shadow:inset 0 0 0 1px rgba(40,120,240,.12)}
+.answer input{margin-top:4px;accent-color:var(--blue);flex:0 0 auto}.answer span{line-height:1.45}
+textarea{display:block;width:100%;min-height:145px;resize:vertical;padding:15px 16px;border:1px solid rgba(95,153,211,.35);border-radius:15px;background:rgba(255,255,255,.76);color:var(--ink);font:inherit;line-height:1.55;outline:none;transition:border-color .2s,box-shadow .2s}
+textarea:focus{border-color:rgba(40,120,240,.72);background:rgba(255,255,255,.94);box-shadow:0 0 0 4px rgba(40,120,240,.11)}
+.hint{color:var(--muted);font-size:.92rem;margin:-4px 0 13px;line-height:1.5}.field-footer{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:9px;color:var(--muted);font-size:.83rem}.counter{font-variant-numeric:tabular-nums;white-space:nowrap}
+.glass-button{position:relative;overflow:hidden;display:inline-flex;justify-content:center;align-items:center;gap:9px;min-height:50px;padding:13px 22px;border:1px solid rgba(255,255,255,.95);border-radius:16px;color:#1552a8;background:linear-gradient(135deg,rgba(255,255,255,.82),rgba(201,230,255,.56));box-shadow:0 10px 25px rgba(41,113,201,.15),inset 0 1px 0 #fff;font:inherit;font-weight:800;text-decoration:none;cursor:pointer;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);transition:transform .22s,box-shadow .22s}
+.glass-button:before{content:"";position:absolute;top:-80%;left:-45%;width:34%;height:260%;transform:rotate(25deg);background:rgba(255,255,255,.62);filter:blur(5px);transition:left .55s;pointer-events:none}.glass-button:hover{transform:translateY(-3px) scale(1.015);box-shadow:0 15px 32px rgba(41,113,201,.22),inset 0 1px 0 #fff}.glass-button:hover:before{left:120%}.glass-button:active{transform:translateY(0) scale(.99)}.glass-button:focus-visible{outline:3px solid #2878f0;outline-offset:4px}
+.submit-row{display:flex;justify-content:center;margin-top:24px}.results{display:none;margin-top:24px;padding:clamp(20px,4vw,32px);animation:appear .45s ease both}.results.show{display:block}.results h2{margin:0 0 10px;font-size:1.6rem}.summary{color:var(--muted);line-height:1.65}.feedback-list{display:grid;gap:12px;padding:0;list-style:none}.feedback-item{padding:14px 16px;border-radius:15px;line-height:1.5;background:rgba(255,255,255,.62);border:1px solid rgba(255,255,255,.9)}.feedback-item.correct{background:rgba(214,249,229,.8);border-color:rgba(41,161,91,.22)}.feedback-item.incorrect{background:rgba(255,231,231,.82);border-color:rgba(213,76,76,.2)}.feedback-item strong{display:block;margin-bottom:5px}.feedback-item small{display:block;margin-top:5px;color:#4f6682;font-size:.92rem}.written-review{padding:15px;border-radius:15px;background:rgba(255,255,255,.62);border:1px solid rgba(255,255,255,.9);margin:12px 0}.written-review p{white-space:pre-wrap;overflow-wrap:anywhere;margin:8px 0 0}.result-actions{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:24px}.result-actions .glass-button{animation:floatIn .5s ease both}.result-actions .glass-button:nth-child(2){animation-delay:.12s}
+@keyframes appear{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}@keyframes floatIn{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(max-width:560px){body{padding:25px 12px}.question{padding:17px}.field-footer{align-items:flex-start;flex-direction:column}.result-actions{flex-direction:column}.result-actions .glass-button{width:100%}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
 </head>
 <body>
-  <main class="page">
-    <header class="hero">
-      <span class="eyebrow">¿Y SI LO PIENSAS? · REFLEXIÓN</span>
-      <h1>Tu opinión importa.</h1>
-      <p>Lee cada pregunta con calma y responde con tus propias palabras. No hay respuestas automáticas: lo importante es tu reflexión.</p>
-    </header>
+<main class="page">
+<header class="hero">
+<span class="eyebrow">¿Y SI LO PIENSAS? · CUESTIONARIO MIXTO</span>
+<h1>Piensa, responde y reflexiona.</h1>
+<p>Responde las preguntas de selección múltiple y desarrolla tus ideas en las preguntas abiertas.</p>
+</header>
 
-    <form class="quiz glass" id="openQuiz">
-      <div class="intro-note">
-        <strong>¿Cómo funciona?</strong> Escribe tus respuestas en los espacios. Cada respuesta admite hasta 2.000 caracteres. Al terminar, podrás revisar todas tus respuestas; no se asigna una nota automática porque la calidad de una respuesta abierta depende del criterio de evaluación.
-      </div>
+<form class="quiz glass" id="mixedQuiz">
+<div class="note"><strong>¿Cómo funciona?</strong> Las preguntas de selección múltiple se califican automáticamente. Las respuestas abiertas no reciben nota automática porque requieren una valoración personal. Cada respuesta escrita admite hasta 2.000 caracteres.</div>
 
-      <!--
-        PARA AÑADIR UNA PREGUNTA:
-        Copia una sección completa con class="question".
-        Cambia el texto del h2 y el atributo data-question.
-        Cada pregunta debe tener un id único en su textarea: respuesta1, respuesta2, respuesta3...
-        Puedes duplicar tantas secciones como necesites.
-      -->
+<!-- PREGUNTA DE SELECCIÓN MÚLTIPLE:
+Cambia data-correct por la letra de la opción correcta: a, b, c o d.
+Cada opción debe tener un input value con la letra correspondiente. -->
 
-      <section class="question" data-question="Desde la ética, ¿qué significan la honestidad y el respeto en una relación? Explica cada valor con tus palabras.">
-        <h2><span class="number">01.</span>Desde la ética, ¿qué significan la honestidad y el respeto en una relación? Explica cada valor con tus palabras.</h2>
-        <p class="hint">Piensa en no ocultar información importante y en reconocer los sentimientos y límites de cada persona.</p>
-        <textarea id="respuesta1" name="respuesta1" maxlength="2000" placeholder="Escribe tu respuesta aquí..." aria-label="Respuesta a la pregunta 1"></textarea>
-        <div class="field-footer"><span>Puedes escribir hasta 2.000 caracteres.</span><span class="counter" data-counter-for="respuesta1">0 / 2000</span></div>
-      </section>
+<!-- PREGUNTAS ABIERTAS:
+Duplica la sección .question.open-question para añadir más.
+Usa ids únicos: abierta1, abierta2, abierta3... -->
 
-      <section class="question" data-question="¿Qué es la responsabilidad afectiva y por qué es importante al decidir qué tipo de relación queremos?">
-        <h2><span class="number">02.</span>¿Qué es la responsabilidad afectiva y por qué es importante al decidir qué tipo de relación queremos?</h2>
-        <p class="hint">Considera cómo nuestras decisiones pueden influir en los sentimientos y el bienestar de los demás.</p>
-        <textarea id="respuesta2" name="respuesta2" maxlength="2000" placeholder="Escribe tu respuesta aquí..." aria-label="Respuesta a la pregunta 2"></textarea>
-        <div class="field-footer"><span>Puedes escribir hasta 2.000 caracteres.</span><span class="counter" data-counter-for="respuesta2">0 / 2000</span></div>
-      </section>
+<section class="question mcq" data-correct="c" data-explanation="El respeto implica que ninguna persona debe ser tratada como un objeto ni utilizada para satisfacer los deseos de otra.">
+<h2><span class="number">01.</span>Desde la ética, ¿qué valor nos recuerda que ninguna persona debe ser tratada como un objeto?</h2>
+<div class="answers">
+<label class="answer"><input type="radio" name="q1" value="a"><span>La popularidad.</span></label>
+<label class="answer"><input type="radio" name="q1" value="b"><span>La competencia.</span></label>
+<label class="answer"><input type="radio" name="q1" value="c"><span>El respeto.</span></label>
+<label class="answer"><input type="radio" name="q1" value="d"><span>La rapidez.</span></label>
+</div></section>
 
-      <section class="question" data-question="El texto dice que no todas las personas deben aceptar una relación abierta o poliamorosa. ¿Por qué crees que es importante respetar que alguien prefiera una relación monógama?">
-        <h2><span class="number">03.</span>El texto dice que no todas las personas deben aceptar una relación abierta o poliamorosa. ¿Por qué crees que es importante respetar que alguien prefiera una relación monógama?</h2>
-        <p class="hint">Relaciona tu respuesta con la libertad de decidir qué tipo de relación queremos.</p>
-        <textarea id="respuesta3" name="respuesta3" maxlength="2000" placeholder="Escribe tu respuesta aquí..." aria-label="Respuesta a la pregunta 3"></textarea>
-        <div class="field-footer"><span>Puedes escribir hasta 2.000 caracteres.</span><span class="counter" data-counter-for="respuesta3">0 / 2000</span></div>
-      </section>
+<section class="question open-question" data-question="Explica con tus propias palabras qué relación tienen el respeto, la responsabilidad y la autonomía con las decisiones sobre las relaciones sexuales casuales.">
+<h2><span class="number">02.</span>Explica con tus propias palabras qué relación tienen el respeto, la responsabilidad y la autonomía con las decisiones sobre las relaciones sexuales casuales.</h2>
+<p class="hint">Puedes dar un ejemplo para cada valor.</p>
+<textarea id="abierta1" name="abierta1" maxlength="2000" placeholder="Escribe tu respuesta aquí..."></textarea>
+<div class="field-footer"><span>Respuesta abierta · No se califica automáticamente.</span><span class="counter" data-counter-for="abierta1">0 / 2.000</span></div>
+</section>
 
-      <section class="question" data-question="¿En qué momento una persona deja de expresar su preferencia y pasa a imponerla, manipular a su pareja o incumplir los acuerdos? Da ejemplos.">
-        <h2><span class="number">04.</span>¿En qué momento una persona deja de expresar su preferencia y pasa a imponerla, manipular a su pareja o incumplir los acuerdos? Da ejemplos.</h2>
-        <p class="hint">Distingue entre proponer algo y presionar a la otra persona para que lo acepte.</p>
-        <textarea id="respuesta4" name="respuesta4" maxlength="2000" placeholder="Escribe tu respuesta aquí..." aria-label="Respuesta a la pregunta 4"></textarea>
-        <div class="field-footer"><span>Puedes escribir hasta 2.000 caracteres.</span><span class="counter" data-counter-for="respuesta4">0 / 2000</span></div>
-      </section>
+<section class="question mcq" data-correct="a" data-explanation="La autonomía nos recuerda que cada individuo puede establecer sus propios límites sin tener que obedecer las expectativas de sus amigos o de su pareja.">
+<h2><span class="number">03.</span>¿Qué significa la autonomía en una decisión íntima?</h2>
+<div class="answers">
+<label class="answer"><input type="radio" name="q3" value="a"><span>Poder establecer los propios límites sin obedecer las expectativas de amigos o de la pareja.</span></label>
+<label class="answer"><input type="radio" name="q3" value="b"><span>Hacer lo que el grupo considera popular.</span></label>
+<label class="answer"><input type="radio" name="q3" value="c"><span>Decidir sin importar la voluntad de la otra persona.</span></label>
+<label class="answer"><input type="radio" name="q3" value="d"><span>Aceptar siempre para no perder una amistad.</span></label>
+</div></section>
 
-      <section class="question" data-question="En el caso de Valentina y Daniel, ¿qué opinas de que Daniel le diga que, si realmente lo ama, debería permitirle estar con otras personas?">
-        <h2><span class="number">05.</span>En el caso de Valentina y Daniel, ¿qué opinas de que Daniel le diga que, si realmente lo ama, debería permitirle estar con otras personas?</h2>
-        <p class="hint">Analiza si el amor obliga a aceptar algo que no deseamos y qué efecto puede tener esa frase en Valentina.</p>
-        <textarea id="respuesta5" name="respuesta5" maxlength="2000" placeholder="Escribe tu respuesta aquí..." aria-label="Respuesta a la pregunta 5"></textarea>
-        <div class="field-footer"><span>Puedes escribir hasta 2.000 caracteres.</span><span class="counter" data-counter-for="respuesta5">0 / 2000</span></div>
-      </section>
+<section class="question open-question" data-question="En el caso de Santiago, ¿qué opciones tiene y qué consecuencias podría tener cada una? ¿Cuál elegirías tú y por qué?">
+<h2><span class="number">04.</span>En el caso de Santiago, ¿qué opciones tiene y qué consecuencias podría tener cada una? ¿Cuál elegirías tú y por qué?</h2>
+<p class="hint">Analiza las opciones de aceptar por presión, rechazar o esperar, y conversar con honestidad sobre sus límites.</p>
+<textarea id="abierta2" name="abierta2" maxlength="2000" placeholder="Escribe tu respuesta aquí..."></textarea>
+<div class="field-footer"><span>Respuesta abierta · No se califica automáticamente.</span><span class="counter" data-counter-for="abierta2">0 / 2.000</span></div>
+</section>
 
-      <section class="question" data-question="¿Qué opciones tiene Valentina y qué consecuencias podría tener cada una? ¿Cuál te parece la más responsable y por qué?">
-        <h2><span class="number">06.</span>¿Qué opciones tiene Valentina y qué consecuencias podría tener cada una? ¿Cuál te parece la más responsable y por qué?</h2>
-        <p class="hint">Considera aceptar por temor, expresar sus límites con honestidad, conversar para encontrar un acuerdo o terminar la relación de manera respetuosa.</p>
-        <textarea id="respuesta6" name="respuesta6" maxlength="2000" placeholder="Escribe tu respuesta aquí..." aria-label="Respuesta a la pregunta 6"></textarea>
-        <div class="field-footer"><span>Puedes escribir hasta 2.000 caracteres.</span><span class="counter" data-counter-for="respuesta6">0 / 2000</span></div>
-      </section>
+<section class="question mcq" data-correct="d" data-explanation="La decisión más responsable no depende de lo que los amigos consideren popular, sino de decidir libremente, sin presiones, con información suficiente y respetando la voluntad de la otra persona.">
+<h2><span class="number">05.</span>Según el caso, ¿cuál sería la decisión más responsable para Santiago?</h2>
+<div class="answers">
+<label class="answer"><input type="radio" name="q5" value="a"><span>Aceptar para demostrar que no tiene miedo.</span></label>
+<label class="answer"><input type="radio" name="q5" value="b"><span>Hacer lo que sus compañeros esperan para evitar burlas.</span></label>
+<label class="answer"><input type="radio" name="q5" value="c"><span>Ignorar sus dudas y decidir rápidamente.</span></label>
+<label class="answer"><input type="radio" name="q5" value="d"><span>Decidir libremente, sin presiones, con información suficiente y respetando la voluntad de la otra persona.</span></label>
+</div></section>
 
-      <section class="question" data-question="¿Por qué crees que la honestidad es necesaria para construir confianza y tomar decisiones informadas en cualquier tipo de relación?">
-        <h2><span class="number">07.</span>¿Por qué crees que la honestidad es necesaria para construir confianza y tomar decisiones informadas en cualquier tipo de relación?</h2>
-        <p class="hint">Piensa qué puede pasar cuando se oculta información o se miente, y justifica con un ejemplo.</p>
-        <textarea id="respuesta7" name="respuesta7" maxlength="2000" placeholder="Escribe tu respuesta aquí..." aria-label="Respuesta a la pregunta 7"></textarea>
-        <div class="field-footer"><span>Puedes escribir hasta 2.000 caracteres.</span><span class="counter" data-counter-for="respuesta7">0 / 2000</span></div>
-      </section>
+<section class="question open-question" data-question="¿Crees que las decisiones sobre la sexualidad se toman realmente con libertad cuando existe presión de los amigos, miedo al rechazo o necesidad de sentirse aceptado? ¿Por qué?">
+<h2><span class="number">06.</span>¿Crees que las decisiones sobre la sexualidad se toman realmente con libertad cuando existe presión de los amigos, miedo al rechazo o necesidad de sentirse aceptado? ¿Por qué?</h2>
+<p class="hint">Pregunta para debatir: justifica tu postura con razones o un ejemplo.</p>
+<textarea id="abierta3" name="abierta3" maxlength="2000" placeholder="Escribe tu respuesta aquí..."></textarea>
+<div class="field-footer"><span>Respuesta abierta · No se califica automáticamente.</span><span class="counter" data-counter-for="abierta3">0 / 2.000</span></div>
+</section>
 
-      <section class="question" data-question="¿Qué debería tener más importancia en una relación: mantenerla a toda costa o respetar los límites y las necesidades de cada persona, aunque eso signifique separarse? ¿Por qué?">
-        <h2><span class="number">08.</span>¿Qué debería tener más importancia en una relación: mantenerla a toda costa o respetar los límites y las necesidades de cada persona, aunque eso signifique separarse? ¿Por qué?</h2>
-        <p class="hint">Pregunta para debatir: argumenta tu postura con al menos una razón.</p>
-        <textarea id="respuesta8" name="respuesta8" maxlength="2000" placeholder="Escribe tu respuesta aquí..." aria-label="Respuesta a la pregunta 8"></textarea>
-        <div class="field-footer"><span>Puedes escribir hasta 2.000 caracteres.</span><span class="counter" data-counter-for="respuesta8">0 / 2000</span></div>
-      </section>
+<section class="question mcq" data-correct="b" data-explanation="La responsabilidad consiste en reconocer los posibles efectos de nuestras acciones y tomar medidas para cuidar nuestra salud y la de la otra persona.">
+<h2><span class="number">07.</span>¿En qué consiste la responsabilidad en este tema?</h2>
+<div class="answers">
+<label class="answer"><input type="radio" name="q7" value="a"><span>En no pensar en las consecuencias para evitar preocupaciones.</span></label>
+<label class="answer"><input type="radio" name="q7" value="b"><span>En reconocer los posibles efectos de nuestras acciones y tomar medidas para cuidar nuestra salud y la de la otra persona.</span></label>
+<label class="answer"><input type="radio" name="q7" value="c"><span>En dejar que otra persona decida por nosotros.</span></label>
+<label class="answer"><input type="radio" name="q7" value="d"><span>En seguir la opinión de la mayoría.</span></label>
+</div></section>
 
-      <div class="submit-row">
-        <button class="glass-button" type="submit">Terminar y revisar respuestas <span aria-hidden="true">→</span></button>
-      </div>
-    </form>
+<section class="question open-question" data-question="Escribe tres consejos prácticos que le darías a un amigo que se siente presionado a tomar una decisión íntima y explica por qué son importantes.">
+<h2><span class="number">08.</span>Escribe tres consejos prácticos que le darías a un amigo que se siente presionado a tomar una decisión íntima y explica por qué son importantes.</h2>
+<p class="hint">Puedes pensar en cómo decir no, cómo hablar con sinceridad y dónde buscar información confiable.</p>
+<textarea id="abierta4" name="abierta4" maxlength="2000" placeholder="Escribe tu respuesta aquí..."></textarea>
+<div class="field-footer"><span>Respuesta abierta · No se califica automáticamente.</span><span class="counter" data-counter-for="abierta4">0 / 2.000</span></div>
+</section>
 
-    <section class="results glass" id="results" aria-live="polite" tabindex="-1">
-      <h2>¡Cuestionario terminado!</h2>
-      <p>La calificación automática no es posible en este cuestionario porque las respuestas son abiertas y su valoración queda a criterio de quien las evalúe. Aquí puedes revisar lo que escribiste.</p>
-      <div id="answerReview"></div>
-      <div class="result-actions">
-        <!-- Reemplaza # por tus enlaces reales -->
-        <a class="glass-button" href="/51694/site/cuestionarios.html" id="moreQuizzes">✦ Responder más cuestionarios</a>
-        <a class="glass-button" href="/51694/site/home.html" id="homeLink">⌂ Volver al inicio</a>
-      </div>
-    </section>
-  </main>
+<section class="question mcq" data-correct="c" data-explanation="Es necesario que exista un consentimiento libre y claro, además de comunicación honesta y respeto por los límites de ambas personas.">
+<h2><span class="number">09.</span>¿Qué debe existir siempre entre las personas involucradas en una decisión íntima?</h2>
+<div class="answers">
+<label class="answer"><input type="radio" name="q9" value="a"><span>Presión para que ambas acepten rápidamente.</span></label>
+<label class="answer"><input type="radio" name="q9" value="b"><span>Silencio sobre los límites y las expectativas.</span></label>
+<label class="answer"><input type="radio" name="q9" value="c"><span>Consentimiento libre y claro, con comunicación honesta.</span></label>
+<label class="answer"><input type="radio" name="q9" value="d"><span>Burlas hacia quien tiene dudas.</span></label>
+</div></section>
 
-  <script>
-    // Actualiza los contadores de caracteres de cada caja.
-    document.querySelectorAll("textarea[maxlength]").forEach((textarea) => {
-      const counter = document.querySelector(`[data-counter-for="${textarea.id}"]`);
-      const updateCounter = () => {
-        if (!counter) return;
-        counter.textContent = `${textarea.value.length.toLocaleString("es-CO")} / 2.000`;
-        counter.classList.toggle("near-limit", textarea.value.length >= 1800);
-      };
-      textarea.addEventListener("input", updateCounter);
-      updateCounter();
-    });
+<div class="submit-row"><button class="glass-button" type="submit">Terminar y calificar <span aria-hidden="true">→</span></button></div>
+</form>
 
-    // Al terminar, muestra las respuestas escritas sin asignar una nota automática.
-    const form = document.getElementById("openQuiz");
-    const results = document.getElementById("results");
-    const review = document.getElementById("answerReview");
+<section class="results glass" id="results" aria-live="polite" tabindex="-1">
+<h2 id="score"></h2>
+<p class="summary" id="summary"></p>
+<h3>Revisión de selección múltiple</h3>
+<ul class="feedback-list" id="feedbackList"></ul>
+<h3>Respuestas abiertas</h3>
+<p class="summary">Estas respuestas quedan para revisión personal; no reciben una nota automática.</p>
+<div id="writtenReview"></div>
+<div class="result-actions">
+<!-- Cambia los href por los enlaces reales de tu web -->
+<a class="glass-button" href="#" id="moreQuizzes">✦ Responder más cuestionarios</a>
+<a class="glass-button" href="#" id="homeLink">⌂ Volver al inicio</a>
+</div>
+</section>
+</main>
+<script>
+document.querySelectorAll('textarea[maxlength]').forEach(textarea=>{
+ const counter=document.querySelector(`[data-counter-for="${textarea.id}"]`);
+ const update=()=>{if(!counter)return;counter.textContent=`${textarea.value.length.toLocaleString('es-CO')} / 2.000`;counter.classList.toggle('near-limit',textarea.value.length>=1800)};
+ textarea.addEventListener('input',update);update();
+});
 
-    form.addEventListener("submit", (event) => {
-      event.preventDefault();
-      review.innerHTML = "";
+const form=document.getElementById('mixedQuiz');
+const results=document.getElementById('results');
+// Toma el número visible de cada pregunta (01, 02, 03...) para que la revisión respete el orden intercalado.
+const questionNumber=question=>question.querySelector('.number').textContent.replace('.','').trim();
+form.addEventListener('submit',event=>{
+ event.preventDefault();
+ const multiple=[...form.querySelectorAll('.mcq')];
+ const open=[...form.querySelectorAll('.open-question')];
+ let correctCount=0;
+ const feedback=document.getElementById('feedbackList');
+ const writtenReview=document.getElementById('writtenReview');
+ feedback.innerHTML='';writtenReview.innerHTML='';
 
-      const questions = [...form.querySelectorAll(".question")];
-      questions.forEach((question, index) => {
-        const textarea = question.querySelector("textarea");
-        const title = question.dataset.question || question.querySelector("h2").innerText;
-        const wrapper = document.createElement("div");
-        wrapper.className = "saved-answer";
+ multiple.forEach((question,index)=>{
+   const title=question.querySelector('h2').innerText.replace(/^\d+\.\s*/,'');
+   const correctValue=question.dataset.correct;
+   const correctInput=question.querySelector(`input[value="${correctValue}"]`);
+   const correctText=correctInput?correctInput.parentElement.innerText.trim():'Respuesta correcta no configurada';
+   const selected=question.querySelector('input[type="radio"]:checked');
+   const selectedText=selected?selected.parentElement.innerText.trim():'Sin responder';
+   const isCorrect=!!selected&&selected.value===correctValue;
+   if(isCorrect)correctCount++;
 
-        const heading = document.createElement("strong");
-        heading.textContent = `${String(index + 1).padStart(2, "0")}. ${title}`;
+   const item=document.createElement('li');
+   item.className=`feedback-item ${isCorrect?'correct':'incorrect'}`;
+   const heading=document.createElement('strong');
+   heading.textContent=`${questionNumber(question)}. ${isCorrect?'✓ Correcta':'✗ Incorrecta'} — ${title}`;
+   const answer=document.createElement('span');
+   answer.textContent=`Tu respuesta: ${selectedText}`;
+   item.append(heading,answer);
+   if(!isCorrect){const correct=document.createElement('small');correct.textContent=`Respuesta correcta: ${correctText}`;item.appendChild(correct);}
+   if(question.dataset.explanation){const explanation=document.createElement('small');explanation.textContent=`Explicación: ${question.dataset.explanation}`;item.appendChild(explanation);}
+   feedback.appendChild(item);
+ });
 
-        const answer = document.createElement("p");
-        answer.textContent = textarea.value.trim() || "No se escribió una respuesta.";
+ open.forEach((question,index)=>{
+   const textarea=question.querySelector('textarea');
+   const wrapper=document.createElement('div');wrapper.className='written-review';
+   const heading=document.createElement('strong');heading.textContent=`${questionNumber(question)}. ${question.dataset.question||question.querySelector('h2').innerText}`;
+   const answer=document.createElement('p');answer.textContent=textarea.value.trim()||'No se escribió una respuesta.';
+   wrapper.append(heading,answer);writtenReview.appendChild(wrapper);
+ });
 
-        wrapper.appendChild(heading);
-        wrapper.appendChild(answer);
-        review.appendChild(wrapper);
-      });
-
-      results.classList.add("show");
-      results.focus();
-      results.scrollIntoView({ behavior: "smooth", block: "start" });
-    });
-  </script>
+ const total=multiple.length;
+ const percentage=total?Math.round(correctCount/total*100):0;
+ document.getElementById('score').textContent=`Selección múltiple: ${correctCount} de ${total} correctas (${percentage}%).`;
+ document.getElementById('summary').textContent='Las preguntas de selección múltiple se calificaron automáticamente. Las respuestas abiertas se muestran para que puedan revisarse según el criterio de evaluación.';
+ results.classList.add('show');results.focus();results.scrollIntoView({behavior:'smooth',block:'start'});
+});
+</script>
 </body>
 </html>
