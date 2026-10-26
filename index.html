@@ -1,48 +1,276 @@
+<!DOCTYPE html>
+<html lang="es">
 <head>
-    <title>¿Y si lo piensas? | LOGIN</title>
-    <link rel="stylesheet" href="./css/style2.css">
-    <link rel="icon" href="./images/logo2.png" type="image/x-icon">
-    <script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>¿Y si lo piensas? | LOGIN</title>
+<link rel="icon" href="images/logo2.png" type="image/x-icon">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --night: #14122b;
+    --card: #1f1b45;
+    --ink: #f4f1ff;
+    --muted: #a9a3d6;
+    --bulb: #ffd54a;
+    --ok: #5eead4;
+    --bad: #ff6b8a;
+    --glass-off: #3a3668;
+    font-family: "Bricolage Grotesque", system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  html, body { height: 100%; }
+  body {
+    background: radial-gradient(circle at 50% 30%, #2a2566 0%, var(--night) 65%);
+    color: var(--ink);
+    display: grid;
+    place-items: center;
+    padding: 20px;
+    overflow: hidden;
+    transition: background .8s;
+  }
+  body.lit { background: radial-gradient(circle at 50% 25%, #4a3d12 0%, var(--night) 70%); }
 
-        
-        function transitionToPage(event) {
-            event.preventDefault();
-            const loginBox = document.querySelector('.login');
-            const body = document.querySelector('body');
+  /* Burbujas de pensamiento flotando */
+  .bubbles { position: fixed; inset: 0; pointer-events: none; overflow: hidden; }
+  .bubbles span {
+    position: absolute; bottom: -80px;
+    color: var(--muted); opacity: 0;
+    font-weight: 800;
+    animation: float var(--d) linear var(--delay) infinite;
+  }
+  @keyframes float {
+    0%   { transform: translateY(0) rotate(-10deg); opacity: 0; }
+    10%  { opacity: .45; }
+    50%  { transform: translateY(-55vh) translateX(var(--sway)) rotate(12deg); }
+    100% { transform: translateY(-115vh) translateX(0) rotate(-8deg); opacity: 0; }
+  }
 
-            // Añadir clases para animaciones
-            loginBox.classList.add('slide-out-right');
-            body.classList.add('fade-to-left');
+  /* Tarjeta */
+  .login {
+    position: relative; z-index: 1;
+    width: min(100%, 400px);
+    background: var(--card);
+    border: 2px solid #3b3680;
+    border-radius: 28px;
+    padding: 28px 28px 22px;
+    box-shadow: 0 30px 80px rgba(0,0,0,.45);
+    animation: enter .9s cubic-bezier(.2, 1.4, .4, 1) both;
+  }
+  @keyframes enter { from { transform: translateY(60px) scale(.9) rotate(-3deg); opacity: 0; } }
+  .login.shake { animation: shake .5s; }
+  @keyframes shake {
+    20% { transform: translateX(-12px) rotate(-1deg); }
+    40% { transform: translateX(10px) rotate(1deg); }
+    60% { transform: translateX(-7px); }
+    80% { transform: translateX(4px); }
+  }
 
-            // Crear el contenedor de la nueva página
-            const newPage = document.createElement('div');
-            newPage.classList.add('new-page');
-            newPage.innerHTML = '<h1>Bienvenido a mi blog - ¿Y si lo piensas?!</h1>';
-            body.appendChild(newPage);
+  /* Bombillo */
+  .bulb { display: block; width: 120px; margin: -70px auto 6px; overflow: visible; }
+  .bulb .glass { fill: var(--glass-off); transition: fill .5s, filter .5s; }
+  .bulb .rays { opacity: 0; transform-origin: 60px 55px; transition: opacity .4s; }
+  .bulb .smile { opacity: 0; } .bulb .flat { opacity: 1; }
+  .bulb.on .glass { fill: var(--bulb); filter: drop-shadow(0 0 22px rgba(255,213,74,.85)); }
+  .bulb.on .rays { opacity: 1; animation: spin 8s linear infinite; }
+  .bulb.on .smile { opacity: 1; } .bulb.on .flat { opacity: 0; }
+  .bulb.on { animation: bounce .6s; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes bounce { 40% { transform: translateY(-14px) scale(1.08); } }
+  .bulb:not(.on) { animation: sway 3.5s ease-in-out infinite; transform-origin: 60px 0; }
+  @keyframes sway { 50% { transform: rotate(4deg); } }
 
-            // Añadir la animación de entrada a la nueva página
-            setTimeout(() => {
-                newPage.classList.add('slide-in-left');
-            }, 100); // Pequeño retraso para sincronizar
+  h1 { font-size: 1.7rem; font-weight: 800; text-align: center; line-height: 1.15; }
+  .sub { text-align: center; color: var(--muted); margin: 6px 0 20px; font-size: .95rem; }
 
-            // Redirigir después de la animación (aumentar el tiempo aquí)
-            setTimeout(() => {
-                window.location.href = 'home.html';
-            }, 3000); // Ahora dura 3 segundos (3000 ms)
-        }
-    </script>
+  label { display: block; font-weight: 600; font-size: .9rem; margin-bottom: 6px; }
+  .field { margin-bottom: 14px; }
+  input {
+    width: 100%;
+    font: inherit; font-size: 1rem;
+    color: var(--ink);
+    background: #14112f;
+    border: 2px solid #3b3680;
+    border-radius: 14px;
+    padding: 13px 15px;
+    outline: none;
+    transition: border-color .25s, box-shadow .25s, transform .25s;
+  }
+  input::placeholder { color: #6f69a8; }
+  input:focus { border-color: var(--bulb); box-shadow: 0 0 0 4px rgba(255,213,74,.18); transform: scale(1.015); }
+  input.ok  { border-color: var(--ok); }
+  input.bad { border-color: var(--bad); }
+  .hint { min-height: 1.3em; margin-top: 5px; font-size: .82rem; color: var(--muted); }
+  .hint.ok { color: var(--ok); } .hint.bad { color: var(--bad); }
+
+  button {
+    width: 100%;
+    font: inherit; font-weight: 800; font-size: 1.05rem;
+    color: #2a2100; background: #6b6598;
+    border: 0; border-radius: 14px; padding: 14px;
+    cursor: pointer;
+    transition: background .4s, transform .15s, box-shadow .3s;
+  }
+  button.ready { background: var(--bulb); box-shadow: 0 8px 24px rgba(255,213,74,.35); }
+  button:hover { transform: translateY(-2px) rotate(-1deg); }
+  button:active { transform: scale(.97); }
+  button:focus-visible { outline: 3px solid var(--ok); outline-offset: 3px; }
+
+  .privacy { font-size: .75rem; line-height: 1.45; color: var(--muted); margin-top: 16px; text-align: center; }
+
+  /* Pantalla de bienvenida */
+  .welcome {
+    position: fixed; inset: 0; z-index: 10;
+    display: grid; place-items: center; text-align: center;
+    background: var(--bulb); color: #2a2100;
+    padding: 24px;
+    clip-path: circle(0% at 50% 20%);
+    pointer-events: none;
+  }
+  .welcome.show { clip-path: circle(150% at 50% 20%); transition: clip-path 1.1s cubic-bezier(.7, 0, .3, 1); pointer-events: auto; }
+  .welcome h2 { font-size: clamp(1.8rem, 6vw, 3.2rem); font-weight: 800; line-height: 1.1; }
+  .welcome p { font-size: 1.2rem; margin-top: 12px; font-weight: 600; }
+  .welcome .dots span { display: inline-block; animation: dot 1s infinite; font-size: 2rem; }
+  .welcome .dots span:nth-child(2) { animation-delay: .2s; }
+  .welcome .dots span:nth-child(3) { animation-delay: .4s; }
+  @keyframes dot { 50% { transform: translateY(-10px); } }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+</style>
 </head>
-
 <body>
-    <div class="login">
-        <h1>Completa los datos</h1>
-        <form method="post" onsubmit="transitionToPage(event);">
-            <input type="text" name="u" placeholder="¿Como quieres que te llamemos?" required="required" />
-            <input type="password" name="p" placeholder="Docente o Estudiante" required="required" />
-            <button type="submit" class="btn btn-primary btn-block btn-large">Ingresar</button>
-        </form>
-        <p style="font-size: 10px; font-weight: bold; margin-top: 15px; color: #555;">
-            Los datos ingresados en el inicio de sesión no serán almacenados. Esto garantiza la seguridad y privacidad de todos nuestros usuarios. Utilizamos conexiones cifradas para proteger tu información en todo momento.
-        </p>
+  <div class="bubbles" id="bubbles" aria-hidden="true"></div>
+
+  <main class="login" id="card">
+    <svg class="bulb" id="bulb" viewBox="0 0 120 150" aria-hidden="true">
+      <g class="rays" stroke="#ffd54a" stroke-width="5" stroke-linecap="round">
+        <line x1="60" y1="-18" x2="60" y2="-4"/><line x1="-12" y1="55" x2="2" y2="55"/>
+        <line x1="118" y1="55" x2="132" y2="55"/><line x1="12" y1="-5" x2="22" y2="5"/>
+        <line x1="108" y1="-5" x2="98" y2="5"/>
+      </g>
+      <path class="glass" d="M60 8C30 8 12 30 12 55c0 20 12 33 22 45 4 5 6 10 6 18h40c0-8 2-13 6-18 10-12 22-25 22-45C108 30 90 8 60 8Z"/>
+      <rect x="40" y="122" width="40" height="9" rx="4" fill="#8f89c9"/>
+      <rect x="46" y="134" width="28" height="9" rx="4" fill="#8f89c9"/>
+      <circle cx="45" cy="52" r="10" fill="#fff"/><circle cx="75" cy="52" r="10" fill="#fff"/>
+      <circle class="pupil" cx="45" cy="52" r="4.5" fill="#14122b"/>
+      <circle class="pupil" cx="75" cy="52" r="4.5" fill="#14122b"/>
+      <path class="flat" d="M46 82h28" stroke="#14122b" stroke-width="4" stroke-linecap="round" fill="none"/>
+      <path class="smile" d="M44 78q16 18 32 0" stroke="#14122b" stroke-width="4" stroke-linecap="round" fill="none"/>
+    </svg>
+
+    <h1>¿Y si lo piensas?</h1>
+    <p class="sub">Completa los datos para entrar</p>
+
+    <form id="form" method="post" novalidate autocomplete="off">
+      <div class="field">
+        <label for="u">Tu nombre</label>
+        <input type="text" id="u" name="u" placeholder="Ej: Laura" maxlength="40" aria-describedby="hu" required>
+        <div class="hint" id="hu" aria-live="polite">Empieza con mayúscula.</div>
+      </div>
+      <div class="field">
+        <label for="p">Tu rol</label>
+        <input type="text" id="p" name="p" placeholder="Docente o Estudiante" maxlength="12" aria-describedby="hp" required>
+        <div class="hint" id="hp" aria-live="polite">Escríbelo tal cual, con la primera letra en mayúscula.</div>
+      </div>
+      <button type="submit" id="btn">Ingresar</button>
+    </form>
+
+    <p class="privacy">Los datos ingresados no serán almacenados. Esto garantiza la seguridad y privacidad de todos nuestros usuarios.</p>
+  </main>
+
+  <div class="welcome" id="welcome" role="status" aria-live="polite">
+    <div>
+      <h2 id="wtitle"></h2>
+      <p>Bienvenido a mi blog: ¿Y si lo piensas?</p>
+      <div class="dots" aria-hidden="true"><span>.</span><span>.</span><span>.</span></div>
     </div>
+  </div>
+
+<script>
+  const $ = id => document.getElementById(id);
+  const card = $('card'), bulb = $('bulb'), btn = $('btn');
+  const uIn = $('u'), pIn = $('p'), hu = $('hu'), hp = $('hp');
+
+  /* ---------- Validación estricta ---------- */
+  function checkName(v) {
+    v = v.trim();
+    if (!v) return { ok: false, msg: 'Escribe tu nombre.' };
+    if (!/^[\p{L}]+(?: [\p{L}]+)*$/u.test(v)) return { ok: false, msg: 'Usa solo letras (sin números ni símbolos).' };
+    if (!/^\p{Lu}/u.test(v)) return { ok: false, msg: 'La primera letra debe ser mayúscula. Ej: ' + v[0].toUpperCase() + v.slice(1) };
+    if (v.length < 2) return { ok: false, msg: 'El nombre es muy corto.' };
+    return { ok: true, msg: '¡Buen nombre!' };
+  }
+  function checkRole(v) {
+    v = v.trim();
+    if (!v) return { ok: false, msg: 'Escribe Docente o Estudiante.' };
+    if (v === 'Docente' || v === 'Estudiante') return { ok: true, msg: '¡Rol correcto!' };
+    const l = v.toLowerCase();
+    if (l === 'docente' || l === 'estudiante') return { ok: false, msg: 'Casi. Escríbelo tal cual, con mayúscula inicial: ' + l[0].toUpperCase() + l.slice(1) };
+    return { ok: false, msg: 'Solo se acepta Docente o Estudiante.' };
+  }
+  function paint(input, hint, r, show) {
+    input.classList.toggle('ok', show && r.ok);
+    input.classList.toggle('bad', show && !r.ok);
+    hint.className = 'hint' + (show ? (r.ok ? ' ok' : ' bad') : '');
+    if (show) hint.textContent = r.msg;
+  }
+  let touchedU = false, touchedP = false;
+  function update() {
+    const ru = checkName(uIn.value), rp = checkRole(pIn.value);
+    paint(uIn, hu, ru, touchedU && uIn.value !== '');
+    paint(pIn, hp, rp, touchedP && pIn.value !== '');
+    const all = ru.ok && rp.ok;
+    bulb.classList.toggle('on', all);
+    btn.classList.toggle('ready', all);
+    document.body.classList.toggle('lit', all);
+    return { ru, rp, all };
+  }
+  uIn.addEventListener('input', () => { touchedU = true; update(); });
+  pIn.addEventListener('input', () => { touchedP = true; update(); });
+
+  /* ---------- Ojos que siguen el cursor ---------- */
+  const pupils = document.querySelectorAll('.pupil');
+  document.addEventListener('pointermove', e => {
+    const r = bulb.getBoundingClientRect();
+    const dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height * .4);
+    const a = Math.atan2(dy, dx), d = Math.min(4, Math.hypot(dx, dy) / 60);
+    pupils.forEach(p => p.style.transform = `translate(${Math.cos(a) * d}px, ${Math.sin(a) * d}px)`);
+  });
+
+  /* ---------- Envío ---------- */
+  $('form').addEventListener('submit', e => {
+    e.preventDefault();
+    touchedU = touchedP = true;
+    const { ru, rp, all } = update();
+    if (!all) {
+      paint(uIn, hu, ru, true); paint(pIn, hp, rp, true);
+      card.classList.remove('shake'); void card.offsetWidth; card.classList.add('shake');
+      (ru.ok ? pIn : uIn).focus();
+      return;
+    }
+    btn.disabled = true;
+    $('wtitle').textContent = '¡Hola, ' + uIn.value.trim() + '! (' + pIn.value.trim() + ')';
+    $('welcome').classList.add('show');
+    setTimeout(() => { window.location.href = './home.html'; }, 3000);
+  });
+
+  /* ---------- Burbujas de pensamiento ---------- */
+  const words = ['?', '¿', '¿Y si…?', '…', '?', '¡Ajá!', '¿Por qué?'];
+  const box = $('bubbles');
+  for (let i = 0; i < 16; i++) {
+    const s = document.createElement('span');
+    s.textContent = words[i % words.length];
+    s.style.left = Math.random() * 100 + '%';
+    s.style.fontSize = (18 + Math.random() * 40) + 'px';
+    s.style.setProperty('--d', (9 + Math.random() * 10) + 's');
+    s.style.setProperty('--delay', (-Math.random() * 15) + 's');
+    s.style.setProperty('--sway', (Math.random() * 120 - 60) + 'px');
+    box.appendChild(s);
+  }
+</script>
 </body>
+</html>
